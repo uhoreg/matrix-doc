@@ -1,6 +1,9 @@
 targets:
   index:
-    files:  # the sort order of files to cat
+    files:
+      - index.rst
+  intro:
+    files:
       - intro.rst
   client_server:
     files:
@@ -16,6 +19,12 @@ targets:
     files:
       - server_server_api.rst
       - { 1: event_signing.rst }
+  identity_service:
+    files:
+      - identity_service_api.rst
+  push_gateway:
+    files:
+      - push_gateway.rst
   appendices:
     files:
       - appendices.rst
@@ -33,9 +42,11 @@ groups:  # reusable blobs of files when prefixed with 'group:'
     - modules/third_party_invites.rst
     - modules/search.rst
     - modules/guest_access.rst
+    - modules/room_previews.rst
     - modules/tags.rst
     - modules/account_data.rst
     - modules/admin.rst
+    - modules/event_context.rst
 
 
 title_styles: ["=", "-", "~", "+", "^", "`", "@"]

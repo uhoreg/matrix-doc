@@ -32,7 +32,13 @@ paths:
           name: filter
           type: string
           description: |-
-            The ID of a filter created using the filter API.
+            The ID of a filter created using the filter API or a filter JSON
+            object encoded as a string. The server will detect whether it is
+            an ID or a JSON object by whether the first character is a ``"{"``
+            open brace. Passing the JSON inline is best suited to one off
+            requests. Creating a filter using the filter API is recommended for
+            clients that reuse the same filter multiple times, for example in
+            long poll requests.
           x-example: "66696p746572"
         - in: query
           name: since
@@ -140,6 +146,22 @@ paths:
                             this room.
                           allOf:
                           - $ref: "definitions/event_batch.yaml"
+                        "unread_notifications":
+                          title: Unread Notification Counts
+                          type: object
+                          description: |-
+                            Counts of unread notifications for this room
+                          properties:
+                            highlight_count:
+                                title: Highlighted notification count
+                                type: integer
+                                description: The number of unread notifications
+                                             for this room with the highlight flag set
+                            notification_count:
+                                title: Total notification count
+                                type: integer
+                                description: The total number of unread notifications
+                                             for this room
                   invite:
                     title: Invited Rooms
                     type: object

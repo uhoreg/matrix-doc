@@ -26,14 +26,14 @@ output_directory = sys.argv[1]
 release_label = sys.argv[2] if len(sys.argv) > 2 else "unstable"
 
 major_version = release_label
-match = re.match("^(r\d)+(\.\d+)?$", major_version)
+match = re.match("^(r\d)+(\.\d+)*$", major_version)
 if match:
     major_version = match.group(1)
 
 apis = MatrixUnits().load_swagger_apis()
 
 output = {
-    "basePath": "/matrix/client/" + major_version,
+    "basePath": "/_matrix/client/" + major_version,
     "consumes": ["application/json"],
     "produces": ["application/json"],
     "host": "localhost:8008",

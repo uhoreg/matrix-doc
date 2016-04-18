@@ -5,10 +5,11 @@ Voice over IP
 
 This module outlines how two users in a room can set up a Voice over IP (VoIP)
 call to each other. Voice and video calls are built upon the WebRTC 1.0 standard.
-Call signalling is achieved by sending `message events`_ to the room. As a result,
-this means that clients MUST only send call events to rooms with exactly two
-participants as currently the WebRTC standard is based around two-party
-communication.
+Call signalling is achieved by sending `message events`_ to the room.  In this
+version of the spec, only two-party communication is supported (e.g. between two
+peers, or between a peer and a multi-point conferencing unit).
+This means that clients MUST only send call events to rooms with exactly two
+participants.
 
 .. _message events: `sect:events`_
 
@@ -89,7 +90,7 @@ The homeserver MAY provide a TURN server which clients can use to contact the
 remote party. The following HTTP API endpoints will be used by clients in order
 to get information about the TURN server.
 
-{{voip_http_api}}
+{{voip_cs_http_api}}
 
 
 Security considerations

@@ -17,7 +17,7 @@ Changelog
 {{client_server_changelog}}
 
 For the full historical changelog, see
-https://github.com/matrix-org/matrix-doc/blob/master/changelogs/client-server.rst
+https://github.com/matrix-org/matrix-doc/blob/master/changelogs/client_server.rst
 
 If this is an unstable snapshot, any changes since the last release may be
 viewed using ``git log``.
@@ -29,12 +29,11 @@ API Standards
   Need to specify any HMAC or access_token lifetime/ratcheting tricks
   We need to specify capability negotiation for extensible transports
 
-The mandatory baseline for communication in Matrix is exchanging JSON objects
-over HTTP APIs. HTTPS is mandated as the baseline for server-server
-(federation) communication.  HTTPS is recommended for client-server
-communication, although HTTP may be supported as a fallback to support basic
-HTTP clients. More efficient optional transports for client-server
-communication will in future be supported as optional extensions - e.g. a
+The mandatory baseline for client-server communication in Matrix is exchanging
+JSON objects over HTTP APIs. HTTPS is recommended for communication, although
+HTTP may be supported as a fallback to support basic
+HTTP clients. More efficient optional transports
+will in future be supported as optional extensions - e.g. a
 packed binary encoding over stream-cipher encrypted TCP socket for
 low-bandwidth/low-roundtrip mobile usage. For the default HTTP transport, all
 API calls use a Content-Type of ``application/json``.  In addition, all strings
@@ -43,7 +42,9 @@ MUST be encoded as UTF-8. Clients are authenticated using opaque
 query string parameter on all requests.
 
 Any errors which occur at the Matrix API level MUST return a "standard error
-response". This is a JSON object which looks like::
+response". This is a JSON object which looks like:
+
+.. code:: json
 
   {
     "errcode": "<error code>",
@@ -87,6 +88,9 @@ Some requests have unique error codes:
 :``M_USER_IN_USE``:
   Encountered when trying to register a user ID which has been taken.
 
+:``M_INVALID_USERNAME``:
+  Encountered when trying to register a user ID which is not valid.
+
 :``M_ROOM_IN_USE``:
   Encountered when trying to create a room which has been taken.
 
@@ -95,7 +99,7 @@ Some requests have unique error codes:
 
 .. _sect:txn_ids:
 
-The Client-Server API typically uses ``HTTP PUT`` to submit requests with a
+The client-server API typically uses ``HTTP PUT`` to submit requests with a
 client-generated transaction identifier. This means that these requests are
 idempotent. The scope of a transaction identifier is a particular access token.
 It **only** serves to identify new
@@ -106,6 +110,8 @@ integer is recommended).
 Some API endpoints may allow or require the use of ``POST`` requests without a
 transaction ID. Where this is optional, the use of a ``PUT`` request is strongly
 recommended.
+
+{{versions_cs_http_api}}
 
 Client Authentication
 ---------------------
@@ -147,7 +153,9 @@ authentication. A request to an endpoint that uses User-Interactive
 Authentication never succeeds without auth. Homeservers may allow requests that
 don't require auth by offering a stage with only the ``m.login.dummy`` auth
 type. The homeserver returns a response with HTTP status 401 and a JSON object
-as follows::
+as follows:
+
+.. code:: json
 
   {
     "flows": [
@@ -180,20 +188,22 @@ session
   API call.
 
 The client then chooses a flow and attempts to complete one of the stages. It
-does this by resubmitting the same request with the the addition of an 'auth'
+does this by resubmitting the same request with the addition of an 'auth'
 key in the object that it submits. This dictionary contains a ``type`` key whose
 value is the name of the stage type that the client is attempting to complete.
 It must also contains a ``session`` key with the value of the session key given
 by the homeserver, if one was given. It also contains other keys dependent on
 the stage type being attempted. For example, if the client is attempting to
-complete login type ``example.type.foo``, it might submit something like this::
+complete login type ``example.type.foo``, it might submit something like this:
+
+.. code:: json
 
   {
     "a_request_parameter": "something",
     "another_request_parameter": "something else",
     "auth": {
         "type": "example.type.foo",
-        "session", "xxxxxx",
+        "session": "xxxxxx",
         "example_credential": "verypoorsharedsecret"
     }
   }
@@ -202,7 +212,9 @@ If the homeserver deems the authentication attempt to be successful but still
 requires more stages to be completed, it returns HTTP status 401 along with the
 same object as when no authentication was attempted, with the addition of the
 ``completed`` key which is an array of stage type the client has completed
-successfully::
+successfully:
+
+.. code:: json
 
   {
     "completed": [ "example.type.foo" ],
@@ -223,7 +235,9 @@ successfully::
   }
 
 If the homeserver decides the attempt was unsuccessful, it returns an error
-message in the standard format::
+message in the standard format:
+
+.. code:: json
 
   {
     "errcode": "M_EXAMPLE_ERROR",
@@ -295,13 +309,31 @@ Password-based
 :Description:
   The client submits a username and secret password, both sent in plain-text.
 
-To respond to this type, reply with an auth dict as follows::
+To respond to this type, reply with an auth dict as follows:
+
+.. code:: json
 
   {
     "type": "m.login.password",
     "user": "<user_id or user localpart>",
     "password": "<password>"
   }
+
+Alternatively reply using a 3pid bound to the user's account on the homeserver
+using the |/account/3pid|_ API rather then giving the ``user`` explicitly as
+follows:
+
+.. code:: json
+
+  {
+    "type": "m.login.password",
+    "medium": "<The medium of the third party identifier. Must be 'email'>",
+    "address": "<The third party address of the user>",
+    "password": "<password>"
+  }
+
+In the case that the homeserver does not know about the supplied 3pid, the
+homeserver must respond with 403 Forbidden.
 
 .. WARNING::
   Clients SHOULD enforce that the password provided is suitably complex. The
@@ -316,7 +348,9 @@ Google ReCaptcha
 :Description:
   The user completes a Google ReCaptcha 2.0 challenge
 
-To respond to this type, reply with an auth dict as follows::
+To respond to this type, reply with an auth dict as follows:
+
+.. code:: json
 
   {
     "type": "m.login.recaptcha",
@@ -330,7 +364,9 @@ Token-based
 :Description:
   The client submits a username and token.
 
-To respond to this type, reply with an auth dict as follows::
+To respond to this type, reply with an auth dict as follows:
+
+.. code:: json
 
   {
     "type": "m.login.token",
@@ -390,7 +426,9 @@ Prior to submitting this, the client should authenticate with an identity
 server. After authenticating, the session information should be submitted to
 the homeserver.
 
-To respond to this type, reply with an auth dict as follows::
+To respond to this type, reply with an auth dict as follows:
+
+.. code:: json
 
   {
     "type": "m.login.email.identity",
@@ -413,10 +451,12 @@ Dummy Auth
   Authentication to perform a request.
 
 To respond to this type, reply with an auth dict with just the type and session,
-if provided::
+if provided:
+
+.. code:: json
 
   {
-    "type": "m.login.dummy",
+    "type": "m.login.dummy"
   }
 
 
@@ -441,9 +481,9 @@ API calls using the User-Interactive Authentication mechanism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. _User-Interactive Authentication: `sect:auth-api`_
 
-{{registration_http_api}}
+{{registration_cs_http_api}}
 
-{{login_http_api}}
+{{login_cs_http_api}}
 
 Login Fallback
 ++++++++++++++
@@ -485,7 +525,7 @@ Adding Account Administrative Contact Information
 A homeserver may keep some contact information for administrative use.
 This is independent of any information kept by any Identity Servers.
 
-{{administrative_contact_http_api}}
+{{administrative_contact_cs_http_api}}
 
 Pagination
 ----------
@@ -588,7 +628,7 @@ Filters can be created on the server and can be passed as as a parameter to APIs
 which return events. These filters alter the data returned from those APIs.
 Not all APIs accept filters.
 
-{{filter_http_api}}
+{{filter_cs_http_api}}
 
 Events
 ------
@@ -604,8 +644,8 @@ point in time::
   
 Clients can add to the stream by PUTing message or state events, and can read
 from the stream via the
-|initialSync|_,
-|events|_,
+|/initialSync|_,
+|/events|_,
 |/rooms/<room_id>/initialSync|_, and
 |/rooms/<room_id>/messages|_
 APIs.
@@ -710,9 +750,9 @@ When the client first logs in, they will need to initially synchronise with
 their homeserver. This is achieved via the initial sync API described below.
 This API also returns an ``end`` token which can be used with the event stream.
 
-{{old_sync_http_api}}
+{{old_sync_cs_http_api}}
 
-{{sync_http_api}}
+{{sync_cs_http_api}}
 
 
 Getting events for a room
@@ -720,16 +760,16 @@ Getting events for a room
 
 There are several APIs provided to ``GET`` events for a room:
 
-{{rooms_http_api}}
+{{rooms_cs_http_api}}
 
 
-{{message_pagination_http_api}}
+{{message_pagination_cs_http_api}}
 
 
 Sending events to a room
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-{{room_state_http_api}}
+{{room_state_cs_http_api}}
 
 
 **Examples**
@@ -766,7 +806,7 @@ In some cases, there may be no need for a ``state_key``, so it can be omitted::
   PUT /rooms/!roomid:domain/state/m.room.bgd.color
   { "color": "red", "hex": "#ff0000" }
 
-{{room_send_http_api}}
+{{room_send_cs_http_api}}
 
 
 Redactions
@@ -815,7 +855,7 @@ Events
 Client behaviour
 ++++++++++++++++
 
-{{redaction_http_api}}
+{{redaction_cs_http_api}}
 
 Rooms
 -----
@@ -833,9 +873,9 @@ includes:
 - ``m.room.join_rules`` : Whether the room is "invite-only" or not.
 
 See `Room Events`_ for more information on these events. To create a room, a
-client has to use the the following API.
+client has to use the following API.
 
-{{create_room_http_api}}
+{{create_room_cs_http_api}}
 
 Room aliases
 ~~~~~~~~~~~~
@@ -861,7 +901,7 @@ request.
 Homeservers can respond to resolve requests for aliases on other domains than
 their own by using the federation API to ask other domain name homeservers.
 
-{{directory_http_api}}
+{{directory_cs_http_api}}
 
 
 Permissions
@@ -910,24 +950,56 @@ following values:
 ``invite``
   This room can only be joined if you were invited.
 
-{{inviting_http_api}}
+The allowable state transitions of membership are::
 
-{{joining_http_api}}
+                                       /ban
+                  +------------------------------------------------------+
+                  |                                                      |
+                  |  +----------------+  +----------------+              |
+                  |  |    /leave      |  |                |              |
+                  |  |                v  v                |              |
+    /invite    +--------+           +-------+             |              |
+  ------------>| invite |<----------| leave |----+        |              |
+               +--------+  /invite  +-------+    |        |              |
+                 |                   |    ^      |        |              |
+                 |                   |    |      |        |              |
+           /join |   +---------------+    |      |        |              |
+                 |   | /join if           |      |        |              |
+                 |   | join_rules         |      | /ban   | /unban       |
+                 |   | public      /leave |      |        |              |
+                 v   v               or   |      |        |              |
+               +------+            /kick  |      |        |              |
+  ------------>| join |-------------------+      |        |              |
+   /join       +------+                          v        |              |
+   if             |                           +-----+     |              |
+   join_rules     +-------------------------->| ban |-----+              |
+   public                   /ban              +-----+                    |
+                                                ^ ^                      |
+                                                | |                      |
+  ----------------------------------------------+ +----------------------+
+                  /ban
 
-{{banning_http_api}}
+
+{{inviting_cs_http_api}}
+
+{{joining_cs_http_api}}
+
+{{kicking_cs_http_api}}
+
+{{banning_cs_http_api}}
 
 Leaving rooms
 ~~~~~~~~~~~~~
 A user can leave a room to stop receiving events for that room. A user must
 have been invited to or have joined the room before they are eligible to leave
 the room. Leaving a room to which the user has been invited rejects the invite.
-Once a user leaves a room, it will no longer appear on the |initialSync|_ API.
+Once a user leaves a room, it will no longer appear on the |/initialSync|_ API.
 
 Whether or not they actually joined the room, if the room is
 an "invite-only" room they will need to be re-invited before they can re-join
 the room.
 
-{{leaving_http_api}}
+{{leaving_cs_http_api}}
 
 Banning users in a room
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -943,8 +1015,7 @@ to |/rooms/<room_id>/ban|_ with::
     "reason": "string: <reason for the ban>"
   }
 
-Banning a user adjusts the banned member's membership state to ``ban`` and
-adjusts the power level of this event to a level higher than the banned person.
+Banning a user adjusts the banned member's membership state to ``ban``.
 Like with other membership changes, a user can directly adjust the target
 member's state, by making a request to
 ``/rooms/<room id>/state/m.room.member/<user id>``::
@@ -953,15 +1024,18 @@ member's state, by making a request to
     "membership": "ban"
   }
 
+A user must be explicitly unbanned with a request to |/rooms/<room_id>/unban|_
+before they can re-join the room or be re-invited.
+
 Listing rooms
 ~~~~~~~~~~~~~
 
-{{list_public_rooms_http_api}}
+{{list_public_rooms_cs_http_api}}
 
 Profiles
 --------
 
-{{profile_http_api}}
+{{profile_cs_http_api}}
 
 Events on Change of Profile Information
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1011,11 +1085,14 @@ have to wait in milliseconds before they can try again.
 .. Links through the external API docs are below
 .. =============================================
 
-.. |initialSync| replace:: ``/initialSync``
-.. _initialSync: #get-matrix-client-%CLIENT_MAJOR_VERSION%-initialsync
+.. |/initialSync| replace:: ``/initialSync``
+.. _/initialSync: #get-matrix-client-%CLIENT_MAJOR_VERSION%-initialsync
 
-.. |events| replace:: ``/events``
-.. _events: #get-matrix-client-%CLIENT_MAJOR_VERSION%-events
+.. |/sync| replace:: ``/sync``
+.. _/sync: #get-matrix-client-%CLIENT_MAJOR_VERSION%-sync
+
+.. |/events| replace:: ``/events``
+.. _/events: #get-matrix-client-%CLIENT_MAJOR_VERSION%-events
 
 .. |/rooms/<room_id>/initialSync| replace:: ``/rooms/<room_id>/initialSync``
 .. _/rooms/<room_id>/initialSync: #get-matrix-client-%CLIENT_MAJOR_VERSION%-rooms-roomid-initialsync
@@ -1041,3 +1118,8 @@ have to wait in milliseconds before they can try again.
 .. |/rooms/<room_id>/ban| replace:: ``/rooms/<room_id>/ban``
 .. _/rooms/<room_id>/ban: #post-matrix-client-%CLIENT_MAJOR_VERSION%-rooms-roomid-ban
 
+.. |/rooms/<room_id>/unban| replace:: ``/rooms/<room_id>/unban``
+.. _/rooms/<room_id>/unban: #post-matrix-client-%CLIENT_MAJOR_VERSION%-rooms-roomid-unban
+
+.. |/account/3pid| replace:: ``/account/3pid``
+.. _/account/3pid: #post-matrix-client-%CLIENT_MAJOR_VERSION%-account-3pid

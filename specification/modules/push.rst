@@ -11,7 +11,7 @@ Push Notifications
                                    |                    |  |                   |
            +-------------------+   | +----------------+ |  | +---------------+ |
            |                   |   | |                | |  | |               | |
-           | Matrix homeserver+----->  Push Gateway  +------> Push Provider | |
+           | Matrix homeserver +----->  Push Gateway  +------> Push Provider | |
            |                   |   | |                | |  | |               | |
            +-^-----------------+   | +----------------+ |  | +----+----------+ |
              |                     |                    |  |      |            |
@@ -89,7 +89,7 @@ Client behaviour
 Clients MUST configure a Pusher before they will receive push notifications.
 There is a single API endpoint for this, as described below.
 
-{{pusher_http_api}}
+{{pusher_cs_http_api}}
 
 .. _pushers: `def:pushers`_
 
@@ -122,16 +122,9 @@ Underride rules ``underride``
   These are identical to ``override`` rules, but have a lower priority than
   ``content``, ``room`` and ``sender`` rules.
 
-Push rules may be either global or device-specific. Device specific rules only
-affect delivery of notifications via pushers with a matching ``profile_tag``.
-All device-specific rules have a higher priority than global rules. This means
-that the full list of rule kinds, in descending priority order, is as follows:
+This means that the full list of rule kinds, in descending priority order, is
+as follows:
 
-* Device-specific Override
-* Device-specific Content
-* Device-specific Room
-* Device-specific Sender
-* Device-specific Underride
 * Global Override
 * Global Content
 * Global Room
@@ -321,12 +314,6 @@ rule determines its behaviour. The following conditions are defined:
     special glob characters should be treated as having asterisks
     prepended and appended when testing the condition.
 
-``profile_tag``
-  Matches the ``profile_tag`` of the device that the notification would be
-  delivered to. Parameters:
-
-  * ``profile_tag``: The profile_tag to match with.
-
 ``contains_display_name``
   This matches unencrypted messages where ``content.body`` contains the owner's
   display name in that room. This is a separate rule because display names may
@@ -347,7 +334,15 @@ Push Rules: API
 Clients can retrieve, add, modify and remove push rules globally or per-device
 using the APIs below.
 
-{{pushrules_http_api}}
+{{pushrules_cs_http_api}}
+
+
+Push Rules: Events
+~~~~~~~~~~~~~~~~~~
+
+When a user changes their push rules a ``m.push_rules`` event is sent to all
+clients in the ``account_data`` section of their next ``/sync`` request. The
+content of the event is the current push rules for the user.
 
 Examples
 ++++++++
@@ -403,12 +398,6 @@ sender and content rules)::
 
 Server behaviour
 ----------------
-
-This describes the format used by "HTTP" pushers to send notifications of
-events to Push Gateways. If the endpoint returns an HTTP error code, the
-homeserver SHOULD retry for a reasonable amount of time using exponential-backoff.
-
-{{push_notifier_http_api}}
 
 Push Gateway behaviour
 ----------------------
