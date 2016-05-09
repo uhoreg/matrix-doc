@@ -12,11 +12,7 @@ consumes:
 produces:
   - application/json
 securityDefinitions:
-  accessToken:
-    type: apiKey
-    description: The user_id or application service access_token
-    name: access_token
-    in: query
+  $ref: definitions/security.yaml
 paths:
   "/events":
     get:
@@ -99,7 +95,7 @@ paths:
                   type: object
                   title: Event
                   allOf:
-                    - "$ref": "../../event-schemas/schema/core-event-schema/room_event.yaml"
+                    - "$ref": "definitions/event-schemas/schema/core-event-schema/room_event.yaml"
         400:
           description: "Bad pagination ``from`` parameter."
         # No tags to exclude this from the swagger UI - use the normal version instead.

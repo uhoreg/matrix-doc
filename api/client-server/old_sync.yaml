@@ -12,11 +12,7 @@ consumes:
 produces:
   - application/json
 securityDefinitions:
-  accessToken:
-    type: apiKey
-    description: The user_id or application service access_token
-    name: access_token
-    in: query
+  $ref: definitions/security.yaml
 paths:
   "/events":
     get:
@@ -84,7 +80,7 @@ paths:
                   type: object
                   title: Event
                   allOf:
-                    - "$ref": "../../event-schemas/schema/core-event-schema/room_event.yaml"
+                    - "$ref": "definitions/event-schemas/schema/core-event-schema/room_event.yaml"
         400:
           description: "Bad pagination ``from`` parameter."
       tags:
@@ -287,7 +283,7 @@ paths:
                   type: object
                   title: Event
                   allOf:
-                    - "$ref": "../../event-schemas/schema/core-event-schema/event.yaml"
+                    - "$ref": "definitions/event-schemas/schema/core-event-schema/event.yaml"
               rooms:
                 type: array
                 items:
@@ -306,7 +302,7 @@ paths:
                         title: "InviteEvent"
                         description: "The invite event if ``membership`` is ``invite``"
                         allOf:
-                          - "$ref": "../../event-schemas/schema/m.room.member"
+                          - "$ref": "definitions/event-schemas/schema/m.room.member"
                     messages:
                       type: object
                       title: PaginationChunk
@@ -334,7 +330,7 @@ paths:
                             type: object
                             title: RoomEvent
                             allOf:
-                              - "$ref": "../../event-schemas/schema/core-event-schema/room_event.yaml"
+                              - "$ref": "definitions/event-schemas/schema/core-event-schema/room_event.yaml"
                       required: ["start", "end", "chunk"]
                     state:
                       type: array
@@ -347,7 +343,7 @@ paths:
                         title: StateEvent
                         type: object
                         allOf:
-                          - "$ref": "../../event-schemas/schema/core-event-schema/state_event.yaml"
+                          - "$ref": "definitions/event-schemas/schema/core-event-schema/state_event.yaml"
                     visibility:
                       type: string
                       enum: ["private", "public"]
@@ -363,7 +359,7 @@ paths:
                         title: Event
                         type: object
                         allOf:
-                          - "$ref": "../../event-schemas/schema/core-event-schema/event.yaml"
+                          - "$ref": "definitions/event-schemas/schema/core-event-schema/event.yaml"
                   required: ["room_id", "membership"]
             required: ["end", "rooms", "presence"]
         404:
@@ -403,7 +399,7 @@ paths:
               }
           schema:
             allOf:
-              - "$ref": "../../event-schemas/schema/core-event-schema/event.yaml"
+              - "$ref": "definitions/event-schemas/schema/core-event-schema/event.yaml"
         404:
           description: The event was not found or you do not have permission to read this event.
       tags:

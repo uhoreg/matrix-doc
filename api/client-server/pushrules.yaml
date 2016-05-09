@@ -12,11 +12,7 @@ consumes:
 produces:
   - application/json
 securityDefinitions:
-  accessToken:
-    type: apiKey
-    description: The user_id or application service access_token
-    name: access_token
-    in: query
+  $ref: definitions/security.yaml
 paths:
   "/pushrules/":
     get:
@@ -612,7 +608,7 @@ paths:
         - in: body
           name: body
           description: |
-            Whether the push rule is enabled or not.
+            The action(s) to perform when the conditions for this rule are met.
           required: true
           schema:
             type: object
@@ -620,6 +616,10 @@ paths:
               actions:
                 type: array
                 description: The action(s) to perform for this rule.
+                items:
+                  type: string
+                  enum: ["notify", "dont_notify", "coalesce", "set_tweak"]
+                  # TODO: type: object e.g. {"set_sound":"beeroclock.wav"} :/
             required: ["actions"]
             example: |-
               {
