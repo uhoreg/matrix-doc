@@ -1,3 +1,17 @@
+.. Copyright 2016 OpenMarket Ltd
+..
+.. Licensed under the Apache License, Version 2.0 (the "License");
+.. you may not use this file except in compliance with the License.
+.. You may obtain a copy of the License at
+..
+..     http://www.apache.org/licenses/LICENSE-2.0
+..
+.. Unless required by applicable law or agreed to in writing, software
+.. distributed under the License is distributed on an "AS IS" BASIS,
+.. WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.. See the License for the specific language governing permissions and
+.. limitations under the License.
+
 Identity Service API
 ====================
 
@@ -123,6 +137,11 @@ if it has never seen one), scoped to that email address + client_secret pair.
 This is to avoid repeatedly sending the same email in the case of request
 retries between the POSTing user and the identity service. The client should
 increment this value if they desire a new email (e.g. a reminder) to be sent.
+
+Note that Home Servers offer APIs that proxy this API, adding additional
+behaviour on top, for example, ``/register/email/requestToken`` is designed
+specifically for use when registering an account and therefore will inform
+the user if the email address given is already registered on the server.
 
 Validating ownership of an email
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

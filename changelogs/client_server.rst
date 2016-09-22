@@ -1,3 +1,109 @@
+<Unreleased changes>
+====================
+
+- Breaking changes:
+
+  - Change the rule kind of `.m.rule.contains_display_name` from
+    `underride` to `override`. This works with all known clients
+    which support push rules, but any other clients implementing
+    the push rules API should be aware of this change. This
+    makes it simple to mute rooms correctly in the API.
+
+- Spec clarifications:
+
+  - Spell out the way that state is handled by ``POST /createRoom``
+    (`#362 <https://github.com/matrix-org/matrix-doc/pull/362>`_).
+  - Emphasise that ``POST /tokenrefresh`` should expire the access token
+    (`#363 <https://github.com/matrix-org/matrix-doc/pull/363>`_).
+  - Clarify the fields which are applicable to different types of push rule
+    (`#365 <https://github.com/matrix-org/matrix-doc/pull/365>`_).
+  - A number of clarifications to authentication
+    (`#371 <https://github.com/matrix-org/matrix-doc/pull/371>`_).
+  - Correct references to ``user_id`` which should have been ``sender``
+    (`#376 <https://github.com/matrix-org/matrix-doc/pull/376>`_).
+  - Correct inconsistent specification of ``redacted_because`` fields and their
+    values (`#378 <https://github.com/matrix-org/matrix-doc/pull/378>`_).
+
+- Changes to the API which will be backwards-compatible for clients:
+
+  - Add ``filename`` parameter to ``POST /_matrix/media/r0/upload``
+    (`#364 <https://github.com/matrix-org/matrix-doc/pull/364>`_).
+  - Document CAS-based client login and the use of ``m.login.token`` in
+    ``/login`` (`#367 <https://github.com/matrix-org/matrix-doc/pull/367>`_).
+  - Make ``origin_server_ts`` a mandatory field of room events
+    (`#379 <https://github.com/matrix-org/matrix-doc/pull/370>`_).
+  - Add top-level ``account_data`` key to the responses to ``GET /sync`` and
+    ``GET /initialSync``
+    (`#380 <https://github.com/matrix-org/matrix-doc/pull/380>`_).
+
+r0.2.0
+======
+
+- Spec clarifications:
+
+  - Room aliases (`#337 <https://github.com/matrix-org/matrix-doc/pull/337>`_):
+
+    - Make it clear that ``GET /directory/room/{roomAlias}`` must work for
+      federated aliases.
+
+    - ``GET /directory/room/{roomAlias}`` cannot return a 409; the ``PUT``
+      endpoint can, however.
+
+  - Power levels:
+
+    - Clarify the defaults to be used for various fields of the
+      ``m.room.power_levels`` event
+      (`#286 <https://github.com/matrix-org/matrix-doc/pull/286>`_,
+      `#341 <https://github.com/matrix-org/matrix-doc/pull/341>`_).
+
+    - Add suggestions for mapping of names to power levels
+      (`#336 <https://github.com/matrix-org/matrix-doc/pull/336>`_).
+
+  - Clarify the room naming algorithm in certain edge cases
+    (`#351 <https://github.com/matrix-org/matrix-doc/pull/351>`_).
+
+  - Remove outdated references to the pre-r0 ``/events`` API, and clarify the
+    section on syncing
+    (`#352 <https://github.com/matrix-org/matrix-doc/pull/352>`_).
+
+
+- Changes to the API which will be backwards-compatible for clients:
+
+  - New endpoints:
+
+    - ``POST /register/email/requestToken``
+      (`#343 <https://github.com/matrix-org/matrix-doc/pull/343>`_).
+
+    - ``POST /account/3pid/email/requestToken``
+      (`#346 <https://github.com/matrix-org/matrix-doc/pull/346>`_).
+
+    - ``POST /account/password/email/requestToken``
+      (`#346 <https://github.com/matrix-org/matrix-doc/pull/346>`_).
+
+    - ``POST /account/deactivate``
+      (`#361 <https://github.com/matrix-org/matrix-doc/pull/361>`_).
+
+  - Updates to the Presence module
+    (`#278 <https://github.com/matrix-org/matrix-doc/pull/278>`_,
+    `#342 <https://github.com/matrix-org/matrix-doc/pull/342>`_):
+
+    - Remove unused ``free_for_chat`` presence state
+    - Add ``currently_active`` flag to the ``m.presence`` event and the ``GET
+      /presence/{userId}/status`` response.
+    - Make idle timeout the responsibility of the server
+    - Remove requirements on servers to propagate profile information via
+      ``m.presence`` events.
+
+  - Add new predefined push rules
+    (`#274 <https://github.com/matrix-org/matrix-doc/pull/274>`_,
+    `#340 <https://github.com/matrix-org/matrix-doc/pull/340/files>`_).
+
+  - ``/sync`` should always return a ``prev_batch`` token
+    (`#345 <https://github.com/matrix-org/matrix-doc/pull/345>`_).
+
+  - add ``to`` parameter to ``GET /rooms/{roomId}/messages`` API
+    (`#348 <https://github.com/matrix-org/matrix-doc/pull/348>`_).
+
 r0.1.0
 ======
 

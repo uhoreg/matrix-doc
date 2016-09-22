@@ -1,3 +1,16 @@
+# Copyright 2016 OpenMarket Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 swagger: '2.0'
 info:
   title: "Matrix Client-Server Sync API"
@@ -20,6 +33,11 @@ paths:
       description: |-
         This will listen for new events and return them to the caller. This will
         block until an event is received, or until the ``timeout`` is reached.
+
+        This endpoint was deprecated in r0 of this specification. Clients
+        should instead call the |/sync|_ API with a ``since`` parameter. See
+        the `migration guide
+        <https://matrix.org/docs/guides/client-server-migrating-from-v1.html#deprecated-endpoints>`_.
       security:
         - accessToken: []
       parameters:
@@ -92,6 +110,11 @@ paths:
       description: |-
         This returns the full state for this user, with an optional limit on the
         number of messages per room to return.
+
+        This endpoint was deprecated in r0 of this specification. Clients
+        should instead call the |/sync|_ API with no ``since`` parameter. See
+        the `migration guide
+        <https://matrix.org/docs/guides/client-server-migrating-from-v1.html#deprecated-endpoints>`_.
       security:
         - accessToken: []
       parameters:
@@ -361,6 +384,15 @@ paths:
                         allOf:
                           - "$ref": "definitions/event-schemas/schema/core-event-schema/event.yaml"
                   required: ["room_id", "membership"]
+              account_data:
+                type: array
+                description: |-
+                  The global private data created by this user.
+                items:
+                  title: Event
+                  type: object
+                  allOf:
+                    - "$ref": "definitions/event-schemas/schema/core-event-schema/event.yaml"
             required: ["end", "rooms", "presence"]
         404:
           description: There is no avatar URL for this user or this user does not exist.
@@ -373,6 +405,9 @@ paths:
       description: |-
         Get a single event based on ``event_id``. You must have permission to
         retrieve this event e.g. by being a member in the room for this event.
+
+        This endpoint was deprecated in r0 of this specification. Clients
+        should instead call the |/rooms/{roomId}/context/{eventId}|_ API.
       security:
         - accessToken: []
       parameters:

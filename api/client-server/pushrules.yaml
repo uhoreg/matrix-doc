@@ -1,3 +1,16 @@
+# Copyright 2016 OpenMarket Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 swagger: '2.0'
 info:
   title: "Matrix Client-Server Push Rules API"
@@ -249,7 +262,7 @@ paths:
           type: string
           name: kind
           required: true
-          x-example: room
+          x-example: content
           enum: ["override", "underride", "sender", "room", "content"]
           description: |
             The kind of rule
@@ -257,7 +270,7 @@ paths:
           type: string
           name: ruleId
           required: true
-          x-example: "#spam:example.com"
+          x-example: "nocake"
           description: |
             The identifier for the rule.
       responses:
@@ -271,13 +284,14 @@ paths:
                 "actions": [
                     "dont_notify"
                 ],
-                "rule_id": "#spam:matrix.org",
-                "enabled": true
+                "pattern": "cake*lie",
+                "rule_id": "nocake",
+                "enabled": true,
+                "default": false
               }
           schema:
             type: object
             description: The push rule.
-            title: PushRule
             allOf: [
               "$ref": "definitions/push_rule.yaml"
             ]
@@ -301,7 +315,7 @@ paths:
           type: string
           name: kind
           required: true
-          x-example: room
+          x-example: content
           enum: ["override", "underride", "sender", "room", "content"]
           description: |
             The kind of rule
@@ -309,7 +323,7 @@ paths:
           type: string
           name: ruleId
           required: true
-          x-example: "#spam:example.com"
+          x-example: "nocake"
           description: |
             The identifier for the rule.
       responses:
@@ -342,7 +356,7 @@ paths:
           type: string
           name: kind
           required: true
-          x-example: room
+          x-example: content
           enum: ["override", "underride", "sender", "room", "content"]
           description: |
             The kind of rule
@@ -350,7 +364,7 @@ paths:
           type: string
           name: ruleId
           required: true
-          x-example: "#spam:example.com"
+          x-example: "nocake"
           description: |
             The identifier for the rule.
         - in: query
@@ -360,7 +374,8 @@ paths:
           x-example: someRuleId
           description: |-
             Use 'before' with a ``rule_id`` as its value to make the new rule the
-            next-most important rule with respect to the given rule.
+            next-most important rule with respect to the given user defined rule.
+            It is not possible to add a rule relative to a predefined server rule.
         - in: query
           type: string
           name: after
@@ -368,7 +383,8 @@ paths:
           x-example: anotherRuleId
           description: |-
             This makes the new rule the next-less important rule relative to the
-            given rule.
+            given user defined rule. It is not possible to add a rule relative
+            to a predefined server rule.
         - in: body
           name: pushrule
           description: |-
@@ -396,11 +412,14 @@ paths:
                 description: |-
                   The conditions that must hold true for an event in order for a
                   rule to be applied to an event. A rule with no conditions
-                  always matches.
+                  always matches. Only applicable to ``underride`` and ``override`` rules.
                 items:
                   type: object
-                  title: conditions
                   allOf: [ "$ref": "definitions/push_condition.yaml" ]
+              pattern:
+                type: string
+                description: |-
+                  Only applicable to ``content`` rules. The glob-style pattern to match against.
             required: ["actions"]
       responses:
         200:
@@ -446,7 +465,7 @@ paths:
           type: string
           name: kind
           required: true
-          x-example: room
+          x-example: cake
           enum: ["override", "underride", "sender", "room", "content"]
           description: |
             The kind of rule
@@ -454,7 +473,7 @@ paths:
           type: string
           name: ruleId
           required: true
-          x-example: "#spam:example.com"
+          x-example: nocake
           description: |
             The identifier for the rule.
       responses:
@@ -490,7 +509,7 @@ paths:
           type: string
           name: kind
           required: true
-          x-example: room
+          x-example: content
           enum: ["override", "underride", "sender", "room", "content"]
           description: |
             The kind of rule
@@ -498,7 +517,7 @@ paths:
           type: string
           name: ruleId
           required: true
-          x-example: "#spam:example.com"
+          x-example: "nocake"
           description: |
             The identifier for the rule.
         - in: body
@@ -547,7 +566,7 @@ paths:
           type: string
           name: kind
           required: true
-          x-example: room
+          x-example: content
           enum: ["override", "underride", "sender", "room", "content"]
           description: |
             The kind of rule
@@ -555,7 +574,7 @@ paths:
           type: string
           name: ruleId
           required: true
-          x-example: "#spam:example.com"
+          x-example: nocake
           description: |
             The identifier for the rule.
       responses:

@@ -1,6 +1,6 @@
 ---
 layout: project
-title: Vector
+title: Try Matrix Now!
 categories: projects
 ---
 
@@ -28,30 +28,30 @@ The easiest way to get started is to pick a client that appeals and join #matrix
       </a>
     </td>
     <td class='bigproject'>
-      <a href='./client/vector.html' class='font18 bold'>
-        Vector
+      <a href='./client/riot.html' class='font18 bold'>
+        Riot
       </a><br />
-      If you like glossy (but beta) web clients, try Vector.<br /><br />
-      <a href='./client/vector.html'>
+      If you like glossy and feature-rich web clients, try Riot.<br /><br />
+      <a href='./client/riot.html'>
         <img src='https://matrix.org/blog/wp-content/uploads/2015/04/vector030216-300x204.png' class='featured_screenshot'>
       </a>
     </td>
     <td class='bigproject'>
-      <a href='./client/matrix-console-ios.html' class='font18 bold'>
-        Matrix Console iOS
+      <a href='./client/riot-ios.html' class='font18 bold'>
+        Riot iOS
       </a><br />
-      Access the Matrix on your iOS phone via Matrix Console iOS.<br /><br />
-      <a href='./client/matrix-console-ios.html'>
-        <img src='/docs/projects/images/matrix-console-ios-2016-02-16-small.png' class='featured_screenshot'>
+      You can also access Matrix on your iOS phone via Riot iOS.<br /><br />
+      <a href='./client/riot-ios.html'>
+        <img src='/docs/projects/images/vector-iOS-featured.png' class='featured_screenshot'>
       </a>
     </td>
     <td class='bigproject'>
-      <a href='./client/matrix-console-android.html' class='font18 bold'>
-        Matrix Console Android
+      <a href='./client/riot-android.html' class='font18 bold'>
+        Riot Android
       </a><br />
-      Similarly, for Android, there is Matrix Console Android!<br /><br />
-      <a href='./client/matrix-console-android.html'>
-        <img src='/docs/projects/images/matrix-console-android-2016-02-16-small.png' class='featured_screenshot'>
+      Riot is also available on Android devices!<br /><br />
+      <a href='./client/riot-android.html'>
+        <img src='/docs/projects/images/vector-android-featured.png' class='featured_screenshot'>
       </a>
     </td>
   </tr>
@@ -76,7 +76,7 @@ Clients
 
 <table>
   {% assign post_nr = '0' %}
-  {% for post in site.categories.client limit:100 %}
+  {% for post in site.categories.client reversed limit:100 %}
     {% assign add_new_row_test = post_nr | modulo:6 %}
     {% if add_new_row_test == 0 %}<tr>{% endif %}
       <td class='project'>
@@ -108,7 +108,7 @@ Servers
 
 <table>
   {% assign post_nr = '0' %}
-  {% for post in site.categories.server limit:100 %}
+  {% for post in site.categories.server reversed limit:100 %}
     {% assign add_new_row_test = post_nr | modulo:6 %}
     {% if add_new_row_test == 0 %}<tr>{% endif %}
       <td class='project'>
@@ -137,7 +137,7 @@ Application Services
 
 <table>
   {% assign post_nr = '0' %}
-  {% for post in site.categories.as limit:100 %}
+  {% for post in site.categories.as reversed limit:100 %}
     {% assign add_new_row_test = post_nr | modulo:6 %}
     {% if add_new_row_test == 0 %}<tr>{% endif %}
       <td class='project'>
@@ -165,7 +165,7 @@ Client SDKs
 
 <table>
   {% assign post_nr = '0' %}
-  {% for post in site.categories.sdk limit:100 %}
+  {% for post in site.categories.sdk reversed limit:100 %}
     {% assign add_new_row_test = post_nr | modulo:6 %}
     {% if add_new_row_test == 0 %}<tr>{% endif %}
       <td class='project'>
@@ -193,7 +193,7 @@ Other
 
 <table>
   {% assign post_nr = '0' %}
-  {% for post in site.categories.other limit:100 %}
+  {% for post in site.categories.other reversed limit:100 %}
     {% assign add_new_row_test = post_nr | modulo:6 %}
     {% if add_new_row_test == 0 %}<tr>{% endif %}
       <td class='project'>

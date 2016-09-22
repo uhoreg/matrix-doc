@@ -4,6 +4,11 @@ Generating the HTML for the specification
 Requirements:
  - docutils (for converting RST to HTML)
  - Jinja2 (for templating)
+ - PyYAML (for reading YAML files)
+
+Nix[2] users can enter an environment with the appropriate tools and
+dependencies available by invoking `nix-shell contrib/shell.nix` in this
+directory.
 
 To generate the complete specification along with supporting documentation, run:
     python gendoc.py
@@ -37,3 +42,4 @@ To make use of the generated file, there are a number of options:
    * View the UI via your browser at http://\<hostname>?url=api-docs.json
 
 [1] http://swagger.io/
+[2] https://nixos.org/nix/
