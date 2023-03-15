@@ -4,7 +4,7 @@ Some Matrix security-sensitive endpoints require that the user re-authenticate
 in order to ensure that the person performing the request is actually the user
 who is logged in.  This is known as [User-Unteractive
 Authentication](https://spec.matrix.org/unstable/client-server-api/#user-interactive-authentication-api)
-(UI ACTH), and often involves the user re-entering their password.
+(UI Auth), and often involves the user re-entering their password.
 
 However, it may be inconvenient for the user to enter their password,
 especially on mobile devices, and some devices may have other mechanisms for
